@@ -1,0 +1,168 @@
+#!/usr/bin/env python3
+"""
+Avendesora Export
+
+Usage:
+    avendesora-export <dest>...
+
+Available destinations: {dests}.
+"""
+
+# Imports {{{1
+from appdirs import user_config_dir
+import arrow
+from avendesora import PasswordGenerator, PasswordError
+from docopt import docopt
+import gnupg
+from inform import conjoin, cull, full_stop, Error, error, fatal, join, os_error
+from tempfile import NamedTemporaryFile
+import nestedtext as nt
+from shlib import Run, set_prefs, to_path
+import socket
+from textwrap import dedent
+
+# Globals {{{1
+date = arrow.now().format('D MMMM YYYY')
+gpg = gnupg.GPG()
+__version__ = '0.0.0'
+__released__ = '2021-08-09'
+set_prefs(use_inform=True)
+
+# header {{{2
+header = dedent("""
+# Exported Avendesora Accounts
+
+# Description {fold}1
+# This file contains accounts exported from {hostname} on {date}.
+#
+# This file was created by *Avendesora Export*.  To modify the file you should
+# change the way it is created.  Any local modifications to this file will be
+# lost on your next export.
+#
+# To adopt these accounts, this file should be placed into your existing
+# Avendesora directory: ~/.config/avendesora.  Then add the name of this file to
+# the accounts_files list in the ~/.config/avendesora/accounts_files file.  You
+# may then find that the account names and aliases from this file conflict
+# with your current accounts, a situation you will need to resolve.
+
+# Imports {fold}1
+from avendesora import (
+    # Basics
+    Account, Hidden, Question, Script, WriteFile, OTP,
+
+    # Account Discovery
+    RecognizeAll, RecognizeAny, RecognizeTitle, RecognizeURL, RecognizeCWD,
+    RecognizeHost, RecognizeUser, RecognizeEnvVar, RecognizeNetwork,
+    RecognizeFile
+)
+
+# Globals {fold}1
+gpg_ids = {gpg_id!r}
+
+
+# Accounts {fold}1
+""").lstrip()
+
+# footer {{{2
+footer = join(
+    '\n# vim:',
+    'filetype=python',
+    'sw=4',
+    'sts=4',
+    'et',
+    'ai',
+    'ff=unix',
+    'fileencoding=utf-8',
+    'foldmethod=marker',
+    ':'
+)
+
+
+# Utilities {{{1
+# gethostname {{{2
+def gethostname():
+    return socket.gethostname()
+    #return socket.gethostname().split('.')[0]
+
+try:
+# Read config file {{{1
+    config_dir = to_path(user_config_dir('avendesora-export'))
+    config_file_path = config_dir / 'config.nt'
+    configs = nt.load(config_file_path, dict)
+
+# Iterate through configurations {{{1
+    cmdline = docopt(__doc__.format(dests=conjoin(configs.keys())))
+    config_names = cmdline['<dest>']
+    for config_name in config_names:
+
+        # get settings {{{2
+        try:
+            config = configs[config_name]
+        except KeyError:
+            error(f'{config_name} is not found.', culprit=config_file_path)
+            continue
+        try:
+            dest = config['dest']
+            gpg_id = config.get('gpg id')
+            accounts = config['accounts']
+        except KeyError as e:
+            error(f"{e} is not found.", culprit=config_file_path)
+            continue
+
+        # export accounts {{{2
+        try:
+            pw = PasswordGenerator()
+            avendesora_accounts = []
+            for account_name in accounts:
+                account = pw.get_account(account_name.lower())
+                avendesora_accounts.append(account.export(fold_level=2))
+        except PasswordError as e:
+            e.report(culprit=account_name)
+            continue
+
+        contents = '\n'.join([
+            header.format(
+                hostname = gethostname(),
+                date = date,
+                gpg_id = gpg_id,
+                fold = '{''{''{',
+            ),
+            '\n\n'.join(avendesora_accounts),
+            footer
+        ])
+
+        # encrypt the contents {{{2
+        if gpg_id:
+            try:
+                encrypted = gpg.encrypt(contents, gpg_id.split(), armor=True)
+                if not encrypted.ok:
+                    msg = '\n'.join(cull([
+                        'unable to encrypt.',
+                        getattr(encrypted, 'stderr', None)
+                    ]))
+                    raise Error(msg, culprit=config_name)
+            except ValueError as e:
+                raise Error(full_stop(e), culprit=config_name)
+            contents = encrypted.data.decode('ascii')
+
+        # copy to destination {{{2
+        if ':' in dest:
+            with NamedTemporaryFile(
+                mode = 'w+',
+                encoding = 'ascii',
+                suffix = '.gpg',
+                prefix = 'avendesora-export-'
+            ) as f:
+                f.write(contents)
+                f.flush()
+                Run(['scp', '-q', f.name, dest], 'soEW')
+        else:
+            path = to_path(dest)
+            path.write_text(contents)
+
+except Error as e:
+    e.terminate()
+except nt.NestedTextError as e:
+    e.terminate()
+except OSError as e:
+    fatal(os_error(e))
