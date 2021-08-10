@@ -19,7 +19,7 @@ Avendesora Export: Exports a Selected Accounts to Remote Host
   `Github Issues <https://github.com/KenKundert/avendesora-export/issues>`_.
 |
 
-*Avendesora Export* can create `https://readthedocs.io/avendesora`_ account 
+*Avendesora Export* can create `https://avendesora.readthedocs.io`_ account 
 files on remote machines that contain selected accounts.  This allows you to use 
 *Avendesora* on satellite machines without maintaining two independent databases 
 of account information.  Simply install *Avendesora* on both your primary and 
