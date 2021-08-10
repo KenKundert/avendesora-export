@@ -1,4 +1,4 @@
-Avendesora Export: Exports a Selected Accounts to Remote Host
+Avendesora Export: Exports Selected Accounts to a Remote Host
 =============================================================
 
 
