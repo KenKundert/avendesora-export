@@ -19,14 +19,14 @@ Avendesora Export: Exports a Selected Accounts to Remote Host
   `Github Issues <https://github.com/KenKundert/avendesora-export/issues>`_.
 |
 
-*Avendesora Export* can create `https://avendesora.readthedocs.io`_ account 
-files on remote machines that contain selected accounts.  This allows you to use 
-*Avendesora* on satellite machines without maintaining two independent databases 
-of account information.  Simply install *Avendesora* on both your primary and 
-satellite machines.  Keep all, or at least most, of your accounts on your 
-primary machine and configure *Avendesora Export* to manage the satellites.  It 
-needs to know the hostname, the path to the accounts file, the encryption keys, 
-and the accounts you wish to export to each satellite.
+*Avendesora Export* can create `Avendesora <https://avendesora.readthedocs.io>`_ 
+account files on remote machines that contain selected accounts.  This allows 
+you to use *Avendesora* on satellite machines without maintaining two 
+independent databases of account information.  Simply install *Avendesora* on 
+both your primary and satellite machines.  Keep all, or at least most, of your 
+accounts on your primary machine and configure *Avendesora Export* to manage the 
+satellites.  It needs to know the hostname, the path to the accounts file, the 
+encryption keys, and the accounts you wish to export to each satellite.
 
 For example, imagine owning a laptop, which is your primary machine, a media 
 machine for watching videos and listening to music, and a server that contains 
