@@ -58,13 +58,16 @@ Then, running::
 exports the selected accounts to your media machine.  It can be run from any 
 directory on your laptop.
 
-Be aware that an export simply overwrites the previously exported accounts file 
-and that an exported accounts file is not setup to support generated secrets.  
+Be aware that an export simply overwrites the previously exported accounts file.  
 You should not manually add accounts to a exported accounts file.  If you would 
 like accounts that are only local to the satellite host, simply add them to its 
 accounts.gpg file.  When you first export a file to a host, you need to add the 
 name of that file to the *accounts_files* list in 
 ``~/.config/avendesora/accounts_files``.
+
+You should also be aware that the exported secrets are frozen, meaning that any 
+generated secrets that are exported are converted to remembered secrets on the 
+satelite.
 
 
 Releases

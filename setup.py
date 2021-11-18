@@ -32,6 +32,7 @@ setup(
             # user will probably have compatibility issues.
     ],
     python_requires='>=3.6',
+    zip_safe = True,
     keywords = 'avendesora export'.split(),
     classifiers = [
         #'Development Status :: 5 - Production/Stable',
