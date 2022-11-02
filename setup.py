@@ -8,7 +8,7 @@ with open('README.rst', encoding='utf-8') as f:
 
 setup(
     name = 'avendesora-export',
-    version = '0.0.0',
+    version = '0.1',
     author = 'Ken Kundert',
     author_email = 'avendesora-export@nurdletech.com',
     description = 'Exports Avendesora accounts to satellite hosts',
