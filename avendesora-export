@@ -134,6 +134,7 @@ try:
         # encrypt the contents {{{2
         if gpg_id:
             try:
+                gpg.encoding = 'utf-8'
                 encrypted = gpg.encrypt(contents, gpg_id.split(), armor=True)
                 if not encrypted.ok:
                     msg = '\n'.join(cull([
@@ -149,7 +150,7 @@ try:
         if ':' in dest:
             with NamedTemporaryFile(
                 mode = 'w+',
-                encoding = 'ascii',
+                encoding = 'utf-8',
                 suffix = '.gpg',
                 prefix = 'avendesora-export-'
             ) as f:
