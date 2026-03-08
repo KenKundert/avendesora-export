@@ -38,22 +38,23 @@ and add the following file to ~/.config/avendesora-export/config.nt::
         personal: F2B442F8F08A750A
         work: 18A1A1A802012366
 
-    media:
-        dest: media:.config/avendesora/imported.gpg
-        keys: personal
-        accounts:
-            - Netflix
-            - YouTubeTV
-            - Hulu
-            - HBO
-            - Disney
-            - Spotify
+    destinations:
+        media:
+            dest: media:.config/avendesora/imported.gpg
+            keys: personal
+            accounts:
+                - Netflix
+                - YouTubeTV
+                - Hulu
+                - HBO
+                - Disney
+                - Spotify
 
-    server:
-        dest: server:.config/avendesora/imported.gpg
-        keys: personal work
-        accounts:
-            - BitcoinRPC
+        server:
+            dest: server:.config/avendesora/imported.gpg
+            keys: personal work
+            accounts:
+                - BitcoinRPC
 
 Then, running::
 
