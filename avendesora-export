@@ -10,16 +10,22 @@ Available destinations: {dests}.
 
 # Imports {{{1
 from appdirs import user_config_dir
-import arrow
 from avendesora import PasswordGenerator, PasswordError
 from docopt import docopt
-import gnupg
-from inform import conjoin, cull, full_stop, Error, error, fatal, join, os_error
-from tempfile import NamedTemporaryFile
-import nestedtext as nt
+from inform import (
+    conjoin, cull, full_stop, Error, error, fatal, is_array, is_str, join,
+    os_error, terminate
+)
 from shlib import Run, set_prefs, to_path
-import socket
+from tempfile import NamedTemporaryFile
 from textwrap import dedent
+from voluptuous import Schema, Invalid, MultipleInvalid, Required
+from voluptuous_errors import report_voluptuous_errors
+import arrow
+import gnupg
+import socket
+import nestedtext as nt
+
 
 # Globals {{{1
 date = arrow.now().format('D MMMM YYYY')
@@ -78,6 +84,33 @@ footer = join(
 )
 
 
+# SCHEMA {{{1
+# to_identifier {{{2
+def to_identifier(key):
+    key = '_'.join(key.strip().lower().split())
+    if key.isidentifier():
+        return key
+    raise Invalid("expected an identifier")
+
+def to_list(arg):
+    if is_str(arg):
+        arg = arg.split()
+    if is_array(arg):
+        return arg
+    raise Invalid("expected a list")
+
+# schema {{{2
+schema = Schema({
+    "keys": {to_identifier: str},
+    Required("destinations"): {
+        to_identifier: dict(
+            dest = str,
+            keys = to_list,
+            accounts = to_list,
+        )
+    }
+})
+
 # Utilities {{{1
 # gethostname {{{2
 def gethostname():
@@ -88,22 +121,30 @@ try:
 # Read config file {{{1
     config_dir = to_path(user_config_dir('avendesora-export'))
     config_file_path = config_dir / 'config.nt'
-    configs = nt.load(config_file_path, dict)
+    keymap = {}
+    configs = nt.load(config_file_path, top=dict, keymap=keymap)
+    try:
+        configs = schema(configs)
+        keys = configs.get('keys', {})
+        destinations = configs.get('destinations', {})
+    except MultipleInvalid as e:
+        report_voluptuous_errors(e, keymap, config_file_path)
+        terminate()
 
 # Iterate through configurations {{{1
-    cmdline = docopt(__doc__.format(dests=conjoin(configs.keys())))
+    cmdline = docopt(__doc__.format(dests=conjoin(destinations.keys())))
     config_names = cmdline['<dest>']
     for config_name in config_names:
 
         # get settings {{{2
         try:
-            config = configs[config_name]
+            config = destinations[config_name]
         except KeyError:
             error(f'{config_name} is not found.', culprit=config_file_path)
             continue
         try:
             dest = config['dest']
-            gpg_id = config.get('gpg id')
+            gpg_ids = config.get('keys')
             accounts = config['accounts']
         except KeyError as e:
             error(f"{e} is not found.", culprit=config_file_path)
@@ -124,7 +165,7 @@ try:
             header.format(
                 hostname = gethostname(),
                 date = date,
-                gpg_id = gpg_id,
+                gpg_id = ' '.join(gpg_ids),
                 fold = '{''{''{',
             ),
             '\n\n'.join(avendesora_accounts),
@@ -132,10 +173,11 @@ try:
         ])
 
         # encrypt the contents {{{2
-        if gpg_id:
+        gpg_ids = [keys.get(id, id) for id in gpg_ids]
+        if gpg_ids:
             try:
                 gpg.encoding = 'utf-8'
-                encrypted = gpg.encrypt(contents, gpg_id.split(), armor=True)
+                encrypted = gpg.encrypt(contents, gpg_ids, armor=True, extra_args=['--yes'])
                 if not encrypted.ok:
                     msg = '\n'.join(cull([
                         'unable to encrypt.',

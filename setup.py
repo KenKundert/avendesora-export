@@ -30,6 +30,7 @@ setup(
             # Be careful.  There's a package called 'gnupg' that's an 
             # incompatible fork of 'python-gnupg'.  If both are installed, the 
             # user will probably have compatibility issues.
+        'voluptuous_errors',
     ],
     python_requires='>=3.6',
     zip_safe = True,

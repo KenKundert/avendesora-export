@@ -1,5 +1,5 @@
-Avendesora Export: Exports Selected Accounts to a Remote Host
-=============================================================
+Avendesora Export — Exports Selected Accounts to a Remote Host
+==============================================================
 
 
 .. image:: https://pepy.tech/badge/avendesora-export/month
@@ -34,9 +34,13 @@ your Bitcoin node.  Assuming *Avendesora* is already installed on your laptop
 and contains all of your accounts, install *Avendesora Export* on your laptop 
 and add the following file to ~/.config/avendesora-export/config.nt::
 
+    keys:
+        personal: F2B442F8F08A750A
+        work: 18A1A1A802012366
+
     media:
         dest: media:.config/avendesora/imported.gpg
-        gpg id: D790CFBA20343D0E
+        keys: personal
         accounts:
             - Netflix
             - YouTubeTV
@@ -47,7 +51,7 @@ and add the following file to ~/.config/avendesora-export/config.nt::
 
     server:
         dest: server:.config/avendesora/imported.gpg
-        gpg id: D790CFBA20343D0E
+        keys: personal work
         accounts:
             - BitcoinRPC
 
@@ -67,7 +71,7 @@ name of that file to the *accounts_files* list in
 
 You should also be aware that the exported secrets are frozen, meaning that any 
 generated secrets that are exported are converted to remembered secrets on the 
-satelite.
+satellite.
 
 
 Releases
