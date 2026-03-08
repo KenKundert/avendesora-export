@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "avendesora-export"
+version = "0.1"
+authors = [
+  { name = "Ken Kundert", email = "avendesora-export@nurdletech.com" },
+]
+description = "Exports Avendesora accounts to satellite hosts"
+readme = "README.rst"
+license = { text = "GPLv3+" }
+requires-python = ">=3.6"
+keywords = ["avendesora", "export"]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "appdirs",
+    "arrow",
+    "avendesora",
+    "docopt",
+    "inform>=1.25",
+    "nestedtext>=3.0",
+    "shlib",
+    "python-gnupg>=0.4.4",
+    "voluptuous_errors",
+]
+
+[project.urls]
+Homepage = "https://github.com/kenkundert/avendesora-export"
+Download = "https://github.com/kenkundert/avendesora-export/tarball/master"
+
+[project.scripts]
+avendesora-export = "avendesora_export:main"

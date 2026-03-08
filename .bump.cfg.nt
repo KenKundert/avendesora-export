@@ -5,7 +5,7 @@ revision: 0
 type: release
 style: python
 files:
-    setup.py:
+    pyproject.toml:
         version: version
     avendesora-export:
         version: __version__
