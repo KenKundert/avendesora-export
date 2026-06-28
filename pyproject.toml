@@ -27,11 +27,11 @@ dependencies = [
     "arrow",
     "avendesora",
     "docopt",
-    "inform>=1.25",
-    "nestedtext>=3.0",
+    "inform",
+    "nestedtext>=3.8",
     "shlib",
     "python-gnupg>=0.4.4",
-    "voluptuous_errors",
+    "voluptuous_errors>=0.2",
 ]
 
 [project.urls]

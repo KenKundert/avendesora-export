@@ -128,7 +128,7 @@ try:
         keys = configs.get('keys', {})
         destinations = configs.get('destinations', {})
     except MultipleInvalid as e:
-        report_voluptuous_errors(e, keymap, config_file_path)
+        report_voluptuous_errors(e, configs, keymap=keymap, source=config_file_path)
         terminate()
 
 # Iterate through configurations {{{1
