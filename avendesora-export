@@ -30,8 +30,8 @@ import nestedtext as nt
 # Globals {{{1
 date = arrow.now().format('D MMMM YYYY')
 gpg = gnupg.GPG()
-__version__ = '0.1'
-__released__ = '2022-11-01'
+__version__ = '0.2'
+__released__ = '2026-06-28'
 set_prefs(use_inform=True)
 
 # header {{{2

@@ -13,8 +13,8 @@ Avendesora Export — Exports Selected Accounts to a Remote Host
 
 
 | Author: Ken Kundert
-| Version: 0.1
-| Released: 2022-11-01
+| Version: 0.2
+| Released: 2026-06-28
 | Please post all questions, suggestions, and bug reports to
   `Github Issues <https://github.com/KenKundert/avendesora-export/issues>`_.
 |
@@ -79,5 +79,5 @@ Releases
 --------
 
 Latest Development Version
-    | Version: 0.1
-    | Released: 2022-11-01
+    | Version: 0.2
+    | Released: 2026-06-28

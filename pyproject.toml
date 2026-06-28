@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "avendesora-export"
-version = "0.1"
+version = "0.2"
 authors = [
   { name = "Ken Kundert", email = "avendesora-export@nurdletech.com" },
 ]
